@@ -29,27 +29,27 @@
 #define HTTP_USER_AGENT "ESP8266"                                  // http user agent string
 
 class BOMObservations {
-	public:
-		BOMObservations(WiFiClient* client);
+  public:
+    BOMObservations(WiFiClient* client);
 
-	  bool requestObservations(const char* path, uint8_t index);
-	  char* getItemAt(uint8_t index);
+    bool requestObservations(const char* path, uint8_t index);
+    char* getItemAt(uint8_t index);
 
-	private:
-	  struct httpRequest {                                           // struct containing data for http request
-			const char* method;
-			const char* host;
-			const char* path;
-	  };
+    private:
+      struct httpRequest {                                           // struct containing data for http request
+        const char* method;
+        const char* host;
+        const char* path;
+    };
 
-		WiFiClient* _client;
-		char* _observations;
+    WiFiClient* _client;
+    char* _observations;
 
-	  bool sendHttpRequest(httpRequest http);
+    bool sendHttpRequest(httpRequest http);
 };
 
 BOMObservations::BOMObservations(WiFiClient* client) {
-	_client = client;
+  _client = client;
 }
 
 bool BOMObservations::sendHttpRequest(httpRequest http) {
@@ -68,9 +68,9 @@ bool BOMObservations::sendHttpRequest(httpRequest http) {
 }
 
 bool BOMObservations::requestObservations(const char* path, uint8_t index = 0) {
-	bool b_result;
-	uint16_t i_line = 0;                                             // index of current line of http response
-  uint16_t i_field = 65535;	                                       // index of desired axf field header
+  bool b_result;
+  uint16_t i_line = 0;                                             // index of current line of http response
+  uint16_t i_field = 0xFFFF;	                                     // index of desired axf field header
   httpRequest h_bom_req;	                                         // http request stuct
 
   h_bom_req.method = HTTP_METHOD_GET;	                             // build http request
@@ -79,7 +79,7 @@ bool BOMObservations::requestObservations(const char* path, uint8_t index = 0) {
 
   b_result = sendHttpRequest(h_bom_req);                           // send http request
 
-	_observations = (char*)malloc(DATA_BUFSIZE * sizeof(char*));     // allocate char array to contain current line of http response
+  _observations = (char*)malloc(DATA_BUFSIZE * sizeof(char*));     // allocate char array to contain current line of http response
 
   while (_client->connected()) {                                   // read response from api
     if (_client->available()) {
